@@ -10,7 +10,7 @@ app.use('/', users);
 app.use('/', cards);
 
 app.get('/', (req, res) => {
-  res.json({ message: 'Requested resource not found' });
+  res.send({ message: 'Requested resource not found' });
 });
 
 app.listen(PORT, (req, res) => {
