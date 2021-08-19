@@ -1,20 +1,19 @@
 const cardsRoute = require('express').Router();
 
-const fs = require('fs');
+const fsPromises = require('fs').promises;
 
 const path = require('path');
 
-cardsRoute.get('/cards', (req, res) => {
-  const cardsPath = path.join('/Users/aishagaines/dev/around-express/data', 'cards.json');
-  fs.readFile(cardsPath, { encoding: 'utf-8' }, (err, data) => {
-    if (err) {
-      console.log(err);
-      return;
-    }
-    const cards = JSON.parse(data);
-    res.send(cards);
-    res.end();
-  });
+cardsRoute.get('/', (req, res) => {
+  const cardsPath = path.join('data', 'cards.json');
+  fsPromises.readFile(cardsPath, { encoding: 'utf-8' })
+    .then((data) => {
+      const parseData = JSON.parse(data);
+      res.status(200).send(parseData);
+    })
+    .catch((err) => {
+      res.status(404).send({ message: err });
+    });
 });
 
 module.exports = cardsRoute;

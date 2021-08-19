@@ -1,26 +1,33 @@
 const userRoute = require('express').Router();
-const fs = require('fs');
+const fsPromises = require('fs').promises;
 const path = require('path');
 
-const userPath = path.join('/Users/aishagaines/dev/around-express/data', 'users.json');
+const userPath = path.join('data', 'users.json');
 
-userRoute.get('/users', (req, res) => {
-  fs.readFile(userPath, { encoding: 'utf-8' }, (err, data) => {
-    if (err) {
-      console.log(err);
-      return;
-    }
-    const users = JSON.parse(data);
-    res.send(users);
-    res.end();
-  });
+userRoute.get('/', (req, res) => {
+  fsPromises.readFile(userPath, { encoding: 'utf-8' })
+    .then((data) => {
+      const users = JSON.parse(data);
+      res.status(200).send(users);
+    })
+    .catch((err) => {
+      res.status(404).send({ message: err });
+    });
 });
 
-userRoute.get('/users/:id', (req, res) => {
-  if (!userPath[req.params._id]) {
-    res.send({ message: 'User ID not found' });
-  }
-  res.send(userPath[req.params._id]);
+userRoute.get('/:_id', (req, res) => {
+  fsPromises.readFile(userPath, { encoding: 'utf-8' })
+    .then((data) => {
+      const userData = JSON.parse(data);
+      const user = userData.find((userID) => userID._id === req.params._id);
+      if (user) {
+        res.status(200).send(user);
+      }
+      res.status(404).send({ message: 'User ID not found' });
+    })
+    .catch((err) => {
+      res.status(404).send({ message: err });
+    });
 });
 
 module.exports = userRoute;

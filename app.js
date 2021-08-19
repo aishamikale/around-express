@@ -6,10 +6,10 @@ const cards = require('./routes/cards');
 const { PORT = 3000 } = process.env;
 const app = express();
 
-app.use('/', users);
-app.use('/', cards);
+app.use('/users', users);
+app.use('/cards', cards);
 
-app.get('/', (req, res) => {
+app.get('*', (req, res) => {
   res.send({ message: 'Requested resource not found' });
 });
 
