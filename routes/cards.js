@@ -12,7 +12,7 @@ cardsRoute.get('/', (req, res) => {
       res.status(200).send(parseData);
     })
     .catch((err) => {
-      res.status(404).send({ message: err });
+      res.status(500).send({ message: err });
     });
 });
 

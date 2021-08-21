@@ -11,7 +11,7 @@ userRoute.get('/', (req, res) => {
       res.status(200).send(users);
     })
     .catch((err) => {
-      res.status(404).send({ message: err });
+      res.status(500).send({ message: err });
     });
 });
 
@@ -26,7 +26,7 @@ userRoute.get('/:_id', (req, res) => {
       res.status(404).send({ message: 'User ID not found' });
     })
     .catch((err) => {
-      res.status(404).send({ message: err });
+      res.status(500).send({ message: err });
     });
 });
 
