@@ -17,13 +17,19 @@ module.exports.createCard = (req, res) => {
       res.status(200).send({ data: card });
     })
     .catch((err) => {
-      res.status(400).send({ message: 'Error', err });
+      if (err.name === 'ValidationError') {
+        res.status(400).send({ message: err });
+      }
+      res.status(500).send({ message: 'Error', err });
     });
 };
 
 module.exports.removeCard = (req, res) => {
   Card.findByIdAndRemove(req.params.id)
     .then((card) => {
+      if (!card) {
+        res.status(404).send({ message: 'Card not found' });
+      }
       res.status(200).send({ data: card });
     })
     .catch((err) => {

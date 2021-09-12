@@ -13,9 +13,15 @@ module.exports.getUsers = (req, res) => {
 module.exports.getUserId = (req, res) => {
   User.findById(req.params.id)
     .then((userId) => {
+      if (!userId) {
+        res.status(404).send({ message: 'User not found' });
+      }
       res.status(200).send({ data: userId });
     })
     .catch((err) => {
+      if (err.name === 'CastError') {
+        res.status(400).send({ message: err });
+      }
       res.status(500).send({ message: 'Error', err });
     });
 };
@@ -27,26 +33,42 @@ module.exports.createUser = (req, res) => {
       res.status(200).send({ data: user });
     })
     .catch((err) => {
-      res.status(400).send({ message: 'Error', err });
+      if (err.name === 'ValidationError') {
+        res.status(400).send({ message: err });
+      }
+      res.status(500).send({ message: 'Error', err });
     });
 };
 
 module.exports.updateProfile = (req, res) => {
-  User.findByIdAndUpdate(req.user._id, { name: req.user.name, about: req.user.about })
+  User.findByIdAndUpdate(req.user._id, { name: req.user.name, about: req.user.about },
+    { new: true })
     .then((user) => {
-      res.send({ data: user });
+      if (!user) {
+        res.status(404).send({ message: 'User not found' });
+      }
+      res.status(200).send({ data: user });
     })
     .catch((err) => {
-      res.status(400).send({ message: 'Error', err });
+      if (err.name === 'CastError') {
+        res.status(400).send({ message: err });
+      }
+      res.status(500).send({ message: 'Error', err });
     });
 };
 
 module.exports.updateAvatar = (req, res) => {
-  User.findByIdAndUpdate(req.user._id, { avatar: req.user.avatar })
+  User.findByIdAndUpdate(req.user._id, { avatar: req.user.avatar }, { new: true })
     .then((user) => {
-      res.send({ data: user });
+      if (!user) {
+        res.status(404).send({ message: 'User not found' });
+      }
+      res.status(200).send({ data: user });
     })
     .catch((err) => {
-      res.status(400).send({ message: 'Error', err });
+      if (err.name === 'CastError') {
+        res.status(400).send({ message: err });
+      }
+      res.status(500).send({ message: 'Error', err });
     });
 };
