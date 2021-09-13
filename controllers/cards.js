@@ -25,7 +25,7 @@ module.exports.createCard = (req, res) => {
 };
 
 module.exports.removeCard = (req, res) => {
-  Card.findByIdAndRemove(req.params.id)
+  Card.findByIdAndRemove(req.params.cardId)
     .then((card) => {
       if (!card) {
         res.status(404).send({ message: 'Card not found' });
@@ -33,24 +33,38 @@ module.exports.removeCard = (req, res) => {
       res.status(200).send({ data: card });
     })
     .catch((err) => {
+      if (err.name === 'ValidationError') {
+        res.status(400).send({ message: err });
+      }
       res.status(500).send({ message: 'Error', err });
     });
 };
 
 module.exports.likeCard = (req, res) => {
-  Card.findByIdAndUpdate(req.params.cardId, { $addToSet: { likes: req.user._id } }, { new: true })
+  Card.findByIdAndUpdate(req.params.cardId, { $addToSet: { likes: req.user._id } }, { new: true },
+    { runValidators: true })
     .then((user) => {
-      res.send({ data: user });
+      if (!user) {
+        res.status(404).send({ message: 'Card not found' });
+      }
+      res.status(200).send({ data: user });
     })
     .catch((err) => {
+      if (err.name === 'ValidationError') {
+        res.status(400).send({ message: err });
+      }
       res.status(500).send({ message: 'Error', err });
     });
 };
 
 module.exports.dislikeCard = (req, res) => {
-  Card.findByIdAndUpdate(req.params.cardId, { $pull: { likes: req.user._id } }, { new: true })
+  Card.findByIdAndUpdate(req.params.cardId, { $pull: { likes: req.user._id } }, { new: true },
+    { runValidators: true })
     .then((user) => {
-      res.send({ data: user });
+      if (!user) {
+        res.status(404).send({ message: 'Card not found' });
+      }
+      res.status(200).send({ data: user });
     })
     .catch((err) => {
       res.status(500).send({ message: 'Error', err });
