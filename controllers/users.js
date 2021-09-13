@@ -33,7 +33,7 @@ module.exports.createUser = (req, res) => {
       res.status(200).send({ data: user });
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
+      if (err.name === 'CastError') {
         res.status(400).send({ message: err });
       }
       res.status(500).send({ message: 'Error', err });
@@ -50,7 +50,7 @@ module.exports.updateProfile = (req, res) => {
       res.status(200).send({ data: user });
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
+      if (err.name === 'CastError') {
         res.status(400).send({ message: err });
       }
       res.status(500).send({ message: 'Error', err });
@@ -67,7 +67,7 @@ module.exports.updateAvatar = (req, res) => {
       res.status(200).send({ data: user });
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
+      if (err.name === 'CastError') {
         res.status(400).send({ message: err });
       }
       res.status(500).send({ message: 'Error', err });

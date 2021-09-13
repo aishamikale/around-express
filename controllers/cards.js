@@ -12,7 +12,7 @@ module.exports.getCards = (req, res) => {
 
 module.exports.createCard = (req, res) => {
   const { name, link } = req.body;
-  Card.create({ name, link })
+  Card.create({ name, link, owner: req.user._id })
     .then((card) => {
       res.status(200).send({ data: card });
     })
@@ -33,7 +33,7 @@ module.exports.removeCard = (req, res) => {
       res.status(200).send({ data: card });
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
+      if (err.name === 'CastError') {
         res.status(400).send({ message: err });
       }
       res.status(500).send({ message: 'Error', err });
@@ -50,7 +50,7 @@ module.exports.likeCard = (req, res) => {
       res.status(200).send({ data: user });
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
+      if (err.name === 'CastError') {
         res.status(400).send({ message: err });
       }
       res.status(500).send({ message: 'Error', err });
@@ -67,6 +67,9 @@ module.exports.dislikeCard = (req, res) => {
       res.status(200).send({ data: user });
     })
     .catch((err) => {
+      if (err.name === 'CastError') {
+        res.status(400).send({ message: err });
+      }
       res.status(500).send({ message: 'Error', err });
     });
 };
