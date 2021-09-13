@@ -42,7 +42,7 @@ module.exports.createUser = (req, res) => {
 
 module.exports.updateProfile = (req, res) => {
   User.findByIdAndUpdate(req.user._id, { name: req.user.name, about: req.user.about },
-    { new: true }, { runValidators: true })
+    { new: true, runValidators: true })
     .then((user) => {
       if (!user) {
         res.status(404).send({ message: 'User not found' });
@@ -58,8 +58,8 @@ module.exports.updateProfile = (req, res) => {
 };
 
 module.exports.updateAvatar = (req, res) => {
-  User.findByIdAndUpdate(req.user._id, { avatar: req.user.avatar }, { new: true },
-    { runValidators: true })
+  User.findByIdAndUpdate(req.user._id, { avatar: req.user.avatar },
+    { new: true, runValidators: true })
     .then((user) => {
       if (!user) {
         res.status(404).send({ message: 'User not found' });
