@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const helmet = require('helmet');
+const cors = require('cors');
 
 const { celebrate, Joi } = require('celebrate');
 const { requestLogger, errorLogger } = require('./middleware/logger');
@@ -15,6 +16,9 @@ const { PORT = 3000 } = process.env;
 
 const app = express();
 
+app.use(cors());
+app.options('*', cors());
+
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(helmet());
@@ -22,6 +26,12 @@ app.use(helmet());
 mongoose.connect('mongodb://localhost:27017/aroundb');
 
 app.use(requestLogger);
+
+app.get('/crash-test', () => {
+  setTimeout(() => {
+    throw new Error('Server will crash now');
+  }, 0);
+});
 
 app.post('/signup', celebrate({
   body: Joi.object().keys({
